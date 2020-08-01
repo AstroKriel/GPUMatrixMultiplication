@@ -1,5 +1,3 @@
-// from: https://github.com/nav-nandan/parallel-matrix-multiplier/blob/master/src/parallel/matrix/multiplication/ParallelMultiplier.java
-
 import java.util.concurrent.atomic.AtomicIntegerArray;
 
 public class ParallelMultiplier extends Thread {
