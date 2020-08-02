@@ -3,17 +3,22 @@ package matrix.mulitiplcation;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 
 public class SerialMultiplier {
+    // important variables
     private AtomicIntegerArray[] matrix_a;
     private AtomicIntegerArray[] matrix_b;
     private AtomicIntegerArray[] matrix_product;
     private int matrix_size;
 
-    public SerialMultiplier(final AtomicIntegerArray[] matrix_a, final AtomicIntegerArray[] matrix_b,
-            final AtomicIntegerArray[] matrix_product, int matrix_size) {
+    public SerialMultiplier(int matrix_size, 
+            final AtomicIntegerArray[] matrix_a, final AtomicIntegerArray[] matrix_b,
+            final AtomicIntegerArray[] matrix_product) {
+        // matrix sizes : assuming all matrices[matrix_size][matrix_size]
+        this.matrix_size = matrix_size;
+        // the two matrices to be multiplied together
         this.matrix_a = matrix_a;
         this.matrix_b = matrix_b;
+        // the product matrix to be determined
         this.matrix_product = matrix_product;
-        this.matrix_size = matrix_size;
     }
 
     public void MultiplyMatrices() {
@@ -31,5 +36,9 @@ public class SerialMultiplier {
                 matrix_product[row].set(col, tmp_product);
             }
         }
+    }
+
+    public AtomicIntegerArray[] getProduct() {
+        return matrix_product;
     }
 }
