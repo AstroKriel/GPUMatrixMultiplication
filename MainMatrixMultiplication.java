@@ -1,3 +1,5 @@
+package matrix.mulitiplcation;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.concurrent.ExecutorService;
@@ -84,7 +86,7 @@ public class MainMatrixMultiplication {
             // and column elemnt in the row
             for (int j = 0; j < matrix_size; j++) {
                 // calculate the product result for the PRODUCT[row, column] value
-                ParallelMultiplier multiplyThread = new ParallelMultiplier(i, j, matrix_a[i], matrix_b, matrix_product);
+                ParallelMultiplier multiplyThread = new ParallelMultiplier(i, j, matrix_size, matrix_a[i], matrix_b, matrix_product);
                 // submit the thread to pool for row-wise multiplication
                 executor.execute(multiplyThread);
             }
@@ -137,11 +139,11 @@ public class MainMatrixMultiplication {
             boolean bool_print_matrices = false;
 
             // define matrix size
-            int matrix_size = 1000;
+            int matrix_size = 100;
             int matrix_max_num = 1000;
 
             // define the number of times to repeat calculations to find the average evaluation time
-            int repeat_num_times = 10;
+            int repeat_num_times = 5;
 
             // initialising matrices (a and b) with random values
             System.out.format("Initialising matrices of dimensions: %d x %d\n", matrix_size, matrix_size);
