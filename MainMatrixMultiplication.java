@@ -161,12 +161,12 @@ public class MainMatrixMultiplication {
 
 
             // debug mode boolean
-            boolean bool_time_parallel  = true;
+            boolean bool_time_parallel  = false;
             boolean bool_time_serial    = true;
             boolean bool_print_matrices = false;
             boolean bool_debug_mode     = false;
             // matrix dimensions and maximum values
-            int matrix_size      = 1000;
+            int matrix_size      = 50;
             int matrix_max_num   = 10;
             // number of times to repeat calculations
             int repeat_num_times = 5;
