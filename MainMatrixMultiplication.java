@@ -18,6 +18,7 @@ public class MainMatrixMultiplication {
     private static AtomicIntegerArray[] matrix_b;
     private static AtomicIntegerArray[] matrix_product;
 
+
     // Initialise a matrix filled with random values
     public static AtomicIntegerArray[] InitialiseRandomMatrix(int matrix_size, int matrix_max_num) {
         AtomicIntegerArray[] matrix = new AtomicIntegerArray[matrix_size]; // matrix is stored as a vector of arrays
@@ -35,6 +36,7 @@ public class MainMatrixMultiplication {
         }
         return matrix;
     }
+
 
     // Initialise a matrix filled with zeros 
     public static AtomicIntegerArray[] InitialiseZeroMatrix(int matrix_size, int matrix_max_num) {
@@ -54,6 +56,7 @@ public class MainMatrixMultiplication {
         return matrix;
     }
 
+
     // Initialise all matrices
     public static void InitializeMatrices(int matrix_size, int matrix_max_num) {
         // initialise matrix_a
@@ -72,16 +75,22 @@ public class MainMatrixMultiplication {
         System.out.println("\tInitialised the result matrix...");
     }
 
-    // Print matrix to the console in parallel
-    public static void ParallelPrintMatrix(ExecutorService executor, 
-            AtomicIntegerArray[] matrix, int matrix_size) {
+
+    public static void ParallelMatrixDistributor(ExecutorService executor, int matrix_size,
+            AtomicIntegerArray[] matrix_a, AtomicIntegerArray[] matrix_b, 
+            AtomicIntegerArray[] matrix_product) {
+        // for each matrix row
         for (int i = 0; i < matrix_size; i++) {
-            // submit thread to pool for row-wise display
-            ParallelPrinter displayThread = new ParallelPrinter(i, matrix);
-            executor.execute(displayThread);
-            System.out.println();
+            // and column elemnt in the row
+            for (int j = 0; j < matrix_size; j++) {
+                // calculate the product result for the PRODUCT[row, column] value
+                ParallelMultiplier multiplyThread = new ParallelMultiplier(i, j, matrix_a[i], matrix_b, matrix_product);
+                // submit the thread to pool for row-wise multiplication
+                executor.execute(multiplyThread);
+            }
         }
     }
+
 
     // Print matrix to the console in serial
     public static void SerialPrintMatrix(AtomicIntegerArray[] matrix, int matrix_size, 
@@ -94,6 +103,7 @@ public class MainMatrixMultiplication {
                 System.out.print(matrix[i].get(j));
                 System.out.print(" ");
             }
+            // add ";..." for matlab formating if debug mode is on
             if (debug_mode & (i < matrix_size - 1)) {
                 System.out.print(";...");
             }
@@ -126,13 +136,7 @@ public class MainMatrixMultiplication {
 
             // row-wise parallel distribution to multiple threads
             System.out.println("Multiplying matrices A and B...");
-            for (int i = 0; i < matrix_size; i++) {
-                for (int j = 0; j < matrix_size; j++) {
-                    // submit thread to pool for row-wise multiplication
-                    ParallelMultiplier multiplyThread = new ParallelMultiplier(i, j, matrix_a[i], matrix_b, matrix_product);
-                    executor.execute(multiplyThread);
-                }
-            }
+            ParallelMatrixDistributor(executor, matrix_size, matrix_a, matrix_b, matrix_product);
             System.out.println("Finished multiplying...");
             System.out.println("");
 
