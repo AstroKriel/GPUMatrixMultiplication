@@ -92,9 +92,22 @@ public class MainMatrixMultiplication {
     }
 
 
+    public static double TimeParallelMatrixProduct(ExecutorService executor, int matrix_size,
+            AtomicIntegerArray[] matrix_a, AtomicIntegerArray[] matrix_b, 
+            AtomicIntegerArray[] matrix_product,
+            int repeat_num_times) {
+        double start = System.currentTimeMillis();
+        for (int i = 0; i < repeat_num_times; i++) {
+            ParallelMatrixDistributor(executor, matrix_size, matrix_a, matrix_b, matrix_product);
+        }
+        double finish = System.currentTimeMillis();
+        return (finish-start)/(1000 * (double)repeat_num_times);
+    }
+
+
     // Print matrix to the console in serial
     public static void SerialPrintMatrix(AtomicIntegerArray[] matrix, int matrix_size, 
-            boolean debug_mode) {
+            boolean bool_debug_mode) {
         // for each row
         for (int i = 0; i < matrix_size; i++) {
             // for each column
@@ -104,7 +117,7 @@ public class MainMatrixMultiplication {
                 System.out.print(" ");
             }
             // add ";..." for matlab formating if debug mode is on
-            if (debug_mode & (i < matrix_size - 1)) {
+            if (bool_debug_mode & (i < matrix_size - 1)) {
                 System.out.print(";...");
             }
             // start a new line for every row
@@ -120,11 +133,15 @@ public class MainMatrixMultiplication {
             System.out.println("");
 
             // debug mode boolean
-            boolean debug_mode = false;
+            boolean bool_debug_mode = false;
+            boolean bool_print_matrices = false;
 
             // define matrix size
-            int matrix_size = 10;
-            int matrix_max_num = 10;
+            int matrix_size = 1000;
+            int matrix_max_num = 1000;
+
+            // define the number of times to repeat calculations to find the average evaluation time
+            int repeat_num_times = 10;
 
             // initialising matrices (a and b) with random values
             System.out.format("Initialising matrices of dimensions: %d x %d\n", matrix_size, matrix_size);
@@ -136,27 +153,34 @@ public class MainMatrixMultiplication {
 
             // row-wise parallel distribution to multiple threads
             System.out.println("Multiplying matrices A and B...");
-            ParallelMatrixDistributor(executor, matrix_size, matrix_a, matrix_b, matrix_product);
-            System.out.println("Finished multiplying...");
+            double ave_time_parallel = TimeParallelMatrixProduct(executor, matrix_size, matrix_a, matrix_b, matrix_product, repeat_num_times);
+            String str_ave_time_parallel = String.format("%.3f", ave_time_parallel);
+            System.out.printf("Finished multiplying with ave time: %s seconds.\n", str_ave_time_parallel);
             System.out.println("");
 
-            // print matrix B
-            System.out.println("Printing matrix A...");
-            SerialPrintMatrix(matrix_a, matrix_size, debug_mode);
-            System.out.println("Finished printing...");
-            System.out.println("");
+            // print matrix A
+            if (bool_print_matrices) {
+                System.out.println("Printing matrix A...");
+                SerialPrintMatrix(matrix_a, matrix_size, bool_debug_mode);
+                System.out.println("Finished printing...");
+                System.out.println("");
+            }
 
             // print matrix B
-            System.out.println("Printing matrix B...");
-            SerialPrintMatrix(matrix_b, matrix_size, debug_mode);
-            System.out.println("Finished printing...");
-            System.out.println("");
+            if (bool_print_matrices) {
+                System.out.println("Printing matrix B...");
+                SerialPrintMatrix(matrix_b, matrix_size, bool_debug_mode);
+                System.out.println("Finished printing...");
+                System.out.println("");
+            }
 
             // print the product matrix
-            System.out.println("Printing the product matrix...");
-            SerialPrintMatrix(matrix_product, matrix_size, debug_mode);
-            System.out.println("Finished printing...");
-            System.out.println("");
+            if (bool_print_matrices) {
+                System.out.println("Printing the product matrix...");
+                SerialPrintMatrix(matrix_product, matrix_size, bool_debug_mode);
+                System.out.println("Finished printing...");
+                System.out.println("");
+            }
 
             // close all the opened threads
             executor.shutdown();
