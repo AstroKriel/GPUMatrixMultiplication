@@ -39,4 +39,5 @@ public class ParallelMultiplier extends Thread {
         // assign the tmp_product to the product matrix
         matrix_product[row].set(col, tmp_product);
     }
+
 }
