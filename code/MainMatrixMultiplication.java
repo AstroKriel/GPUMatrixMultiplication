@@ -83,7 +83,8 @@ public class MainMatrixMultiplication {
 
     // Send the information for matrix multiplication in parallel
     public static void ParallelMatrixDistributor(ExecutorService executor, int matrix_size,
-            AtomicIntegerArray[] matrix_a, AtomicIntegerArray[] matrix_b, 
+            AtomicIntegerArray[] matrix_a, 
+            AtomicIntegerArray[] matrix_b, 
             AtomicIntegerArray[] matrix_product) {
         // for each matrix row
         for (int i = 0; i < matrix_size; i++) {
@@ -100,7 +101,8 @@ public class MainMatrixMultiplication {
 
     // Send the information for matrix multiplication in serial
     public static AtomicIntegerArray[] SerialMatrixDistributor(int matrix_size,
-            AtomicIntegerArray[] matrix_a, AtomicIntegerArray[] matrix_b, 
+            AtomicIntegerArray[] matrix_a, 
+            AtomicIntegerArray[] matrix_b, 
             AtomicIntegerArray[] matrix_product) {
         // initialise the multiplier object
         SerialMultiplier smm = new SerialMultiplier(matrix_size, matrix_a, matrix_b, matrix_product);
@@ -112,7 +114,8 @@ public class MainMatrixMultiplication {
 
 
     // Print matrix to the console in serial
-    public static void SerialPrintMatrix(AtomicIntegerArray[] matrix, int matrix_size, 
+    public static void SerialPrintMatrix(AtomicIntegerArray[] matrix, 
+            int matrix_size, 
             boolean bool_debug_mode) {
         // for each row
         for (int i = 0; i < matrix_size; i++) {
@@ -134,7 +137,8 @@ public class MainMatrixMultiplication {
 
     // Check the number of differences 
     public static int CheckErrorInMatrices(int matrix_size,
-            AtomicIntegerArray[] matrix_1, AtomicIntegerArray[] matrix_2) {
+            AtomicIntegerArray[] matrix_1, 
+            AtomicIntegerArray[] matrix_2) {
         int num_errors = 0;
         // for each row
         for (int i = 0; i < matrix_size; i++) {
@@ -161,13 +165,13 @@ public class MainMatrixMultiplication {
 
 
             // debug mode boolean
-            boolean bool_time_parallel  = false;
-            boolean bool_time_serial    = true;
-            boolean bool_print_matrices = false;
-            boolean bool_debug_mode     = false;
+            boolean bool_time_parallel  = true; // perform the serial parallel product?
+            boolean bool_time_serial    = true; // perform the serial matrix product?
+            boolean bool_print_matrices = false; // display the matrices?
+            boolean bool_debug_mode     = false; // run the program in debug mode?
             // matrix dimensions and maximum values
-            int matrix_size      = 50;
-            int matrix_max_num   = 10;
+            int matrix_size      = 800; // matrix[matrix_size][matrix_size]
+            int matrix_max_num   = 1000; // maximum number to be used in the random matrices
             // number of times to repeat calculations
             int repeat_num_times = 5;
             // initialise the timing variales
@@ -197,7 +201,6 @@ public class MainMatrixMultiplication {
                 System.out.println("Finished printing...");
                 System.out.println("");
             }
-            System.out.println("");
 
 
             // compute matrix product in parallel : row-wise parallel with multiple threads
@@ -228,7 +231,6 @@ public class MainMatrixMultiplication {
                     System.out.println("");
                 }
             }
-            System.out.println("");
 
 
             // compuate matrix product in serial 
@@ -255,7 +257,6 @@ public class MainMatrixMultiplication {
                     System.out.println("");
                 }
             }
-            System.out.println("");
 
 
             // calculate the number of differences between the serial and parallel products
@@ -263,7 +264,6 @@ public class MainMatrixMultiplication {
                 System.out.format("There are: %d differences between the two products\n", CheckErrorInMatrices(matrix_size, matrix_product_parallel, matrix_product_serial));
                 System.out.println("");
             }
-            System.out.println("");
 
 
             // finished program

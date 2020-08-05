@@ -10,7 +10,8 @@ public class SerialMultiplier {
     private int matrix_size;
 
     public SerialMultiplier(int matrix_size, 
-            final AtomicIntegerArray[] matrix_a, final AtomicIntegerArray[] matrix_b,
+            final AtomicIntegerArray[] matrix_a, 
+            final AtomicIntegerArray[] matrix_b,
             final AtomicIntegerArray[] matrix_product) {
         // matrix sizes : assuming all matrices[matrix_size][matrix_size]
         this.matrix_size = matrix_size;

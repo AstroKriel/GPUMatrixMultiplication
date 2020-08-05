@@ -12,8 +12,11 @@ public class ParallelMultiplier extends Thread {
     private AtomicIntegerArray[] matrix_product;
 
     // store the matrices and where the matrix product is up to
-    public ParallelMultiplier(final int row, final int col, final int matrix_size,
-            final AtomicIntegerArray matrix_a, final AtomicIntegerArray[] matrix_b,
+    public ParallelMultiplier(final int row, 
+            final int col, 
+            final int matrix_size,
+            final AtomicIntegerArray matrix_a, 
+            final AtomicIntegerArray[] matrix_b,
             final AtomicIntegerArray[] matrix_product) {
         // position of where the matrix product is up to
         this.row = row;
@@ -39,5 +42,4 @@ public class ParallelMultiplier extends Thread {
         // assign the tmp_product to the product matrix
         matrix_product[row].set(col, tmp_product);
     }
-
 }
