@@ -166,11 +166,11 @@ public class MainMatrixMultiplication {
 
             // debug mode boolean
             boolean bool_time_parallel  = true; // perform the serial parallel product?
-            boolean bool_time_serial    = true; // perform the serial matrix product?
+            boolean bool_time_serial    = false; // perform the serial matrix product?
             boolean bool_print_matrices = false; // display the matrices?
             boolean bool_debug_mode     = false; // run the program in debug mode?
             // matrix dimensions and maximum values
-            int matrix_size      = 20; // matrix[matrix_size][matrix_size]
+            int matrix_size      = 1000; // matrix[matrix_size][matrix_size]
             int matrix_max_num   = 10; // maximum number to be used in the random matrices
             // number of times to repeat calculations
             int repeat_num_times = 5;
