@@ -2,7 +2,7 @@ package matrix.mulitiplcation;
 
 import java.util.concurrent.atomic.AtomicIntegerArray;
 
-public class ParallelMultiplier extends Thread {
+public class ParallelMultiplier implements Runnable {
     // important variables
     private int row;
     private int col;
