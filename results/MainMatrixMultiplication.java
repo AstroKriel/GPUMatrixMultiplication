@@ -1,9 +1,7 @@
 package matrix.mulitiplcation;
 
-import java.io.*;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicIntegerArray;
@@ -157,25 +155,6 @@ public class MainMatrixMultiplication {
     }
 
 
-    public static void SaveMatrix(int matrix_size, String filename, AtomicIntegerArray[] matrix) {
-        try {
-            BufferedWriter bw = new BufferedWriter(new FileWriter(filename));
-            for (int i = 0; i < matrix_size; i++) {
-                for (int j = 0; j < matrix_size; j++) {
-                    if (j == matrix_size-1) {
-                        bw.write(matrix[i].get(j) + " \n");
-                    } else {
-                        bw.write(matrix[i].get(j) + ", ");
-                    }
-                }
-            }
-            bw.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
 
     // Main Program
 	public static void main(String[] args) {
@@ -187,7 +166,7 @@ public class MainMatrixMultiplication {
 
             // debug mode boolean
             boolean bool_time_parallel  = true; // perform the serial parallel product?
-            boolean bool_time_serial    = true; // perform the serial matrix product?
+            boolean bool_time_serial    = false; // perform the serial matrix product?
             boolean bool_print_matrices = false; // display the matrices?
             boolean bool_debug_mode     = false; // run the program in debug mode?
             // matrix dimensions and maximum values
@@ -224,20 +203,50 @@ public class MainMatrixMultiplication {
             }
 
 
+            // compute matrix product in parallel : row-wise parallel with multiple threads
+            if (bool_time_parallel) {
+                // thread pool for space efficiency (maximum of 10 threads spawned at a given time)
+                ExecutorService executor = Executors.newFixedThreadPool(10);
+                // multiply the matrices in parallel
+                System.out.println("Multiplying matrices A and B in parallel...");
+                // start timing
+                start_time = System.currentTimeMillis();
+                // repeat calculation repeat_num_times times
+                for (int i = 0; i < repeat_num_times; i++) {
+                    ParallelMatrixDistributor(executor, matrix_size, matrix_a, matrix_b, matrix_product_parallel);
+                }
+                // stop timing
+                finish_time = System.currentTimeMillis();
+                // average time
+                ave_time_parallel = (finish_time-start_time)/(1000 * (double)repeat_num_times);
+                System.out.printf("Finished multiplying in paralllel with ave time: %s seconds.\n", String.format("%.5f", ave_time_parallel));
+                System.out.println("");
+                // close all the opened threads
+                executor.shutdown();
+                // print the parallel product matrix
+                if (bool_print_matrices) {
+                    System.out.println("Printing the (parallel) product matrix...");
+                    SerialPrintMatrix(matrix_product_parallel, matrix_size, bool_debug_mode);
+                    System.out.println("Finished printing...");
+                    System.out.println("");
+                }
+            }
+
+
             // compuate matrix product in serial 
             if (bool_time_serial) {
                 // multiply matrices in serial
                 System.out.println("Multiplying matrices A and B in serial...");
                 // start timing
-                start_time = System.nanoTime();
+                start_time = System.currentTimeMillis();
                 // repeat calculation repeat_num_times times
                 for (int i = 0; i < repeat_num_times; i++) {
                     matrix_product_serial = SerialMatrixDistributor(matrix_size, matrix_a, matrix_b, matrix_product_serial);
                 }
                 // stop timing
-                finish_time = System.nanoTime();
+                finish_time = System.currentTimeMillis();
                 // average timing
-                ave_time_serial = (finish_time-start_time)/(1e9 * (double)repeat_num_times);
+                ave_time_serial = (finish_time-start_time)/(1000 * (double)repeat_num_times);
                 System.out.printf("Finished multiplying in serial with aveage time: %s seconds.\n", String.format("%.5f", ave_time_serial));
                 System.out.println("");
                 // print the serial product matrix
@@ -247,43 +256,6 @@ public class MainMatrixMultiplication {
                     System.out.println("Finished printing...");
                     System.out.println("");
                 }
-                // save matrix
-                SaveMatrix(matrix_size, "matrix_product_serial.txt", matrix_product_serial);
-            }
-
-
-            // compute matrix product in parallel : row-wise parallel with multiple threads
-            if (bool_time_parallel) {
-                // thread pool for space efficiency (maximum of 10 threads spawned at a given time)
-                ExecutorService executor = Executors.newFixedThreadPool(10);
-                // multiply the matrices in parallel
-                System.out.println("Multiplying matrices A and B in parallel...");
-                // start timing
-                start_time = System.nanoTime();
-                // repeat calculation repeat_num_times times
-                for (int i = 0; i < repeat_num_times; i++) {
-                    ParallelMatrixDistributor(executor, matrix_size, matrix_a, matrix_b, matrix_product_parallel);
-                }
-                // close all the opened threads
-                executor.shutdown();
-                // blocked the program here until all tasks have finished running
-                try { executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS); }
-                catch (InterruptedException e) { e.printStackTrace(); }
-                // stop timing
-                finish_time = System.nanoTime();
-                // average time
-                ave_time_parallel = (finish_time-start_time)/(1e9 * (double)repeat_num_times);
-                System.out.printf("Finished multiplying in paralllel with ave time: %s seconds.\n", String.format("%.5f", ave_time_parallel));
-                System.out.println("");
-                // print the parallel product matrix
-                if (bool_print_matrices) {
-                    System.out.println("Printing the (parallel) product matrix...");
-                    SerialPrintMatrix(matrix_product_parallel, matrix_size, bool_debug_mode);
-                    System.out.println("Finished printing...");
-                    System.out.println("");
-                }
-                // save matrix
-                SaveMatrix(matrix_size, "matrix_product_parallel.txt", matrix_product_parallel);
             }
 
 
