@@ -39,12 +39,12 @@ time_ave_serial   = np.mean(n_times_serial, axis=1)
 ## use dark theme
 plt.style.use('dark_background')
 ## parallel by implementing runnable
-plt.errorbar(n_size, time_ave_parallel, yerr=time_std_parallel, label='Parallel Computation')
+plt.errorbar(n_size, time_ave_parallel, yerr=time_std_parallel, label=r'Parallel Computation (5 processors)')
 ## serial
-plt.errorbar(n_size, time_ave_serial, yerr=time_std_serial, label='Serial Computation')
+plt.errorbar(n_size, time_ave_serial, yerr=time_std_serial, label=r'Serial Computation')
 ## label figure
-plt.xlabel('Matrix size')
-plt.ylabel('Average Compute Time [s]')
+plt.xlabel(r'Matrix size')
+plt.ylabel(r'Average Compute Time [s]')
 ## add legend
 plt.legend(loc='upper left')
 ## show figure
